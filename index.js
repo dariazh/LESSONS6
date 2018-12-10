@@ -26,12 +26,15 @@ const car = new Car;
 //car.save();
 //car.delete(18);
 const user = new User;
-//user.load(5);
+User.load();
 //user.loadAll();
-//user.id = 100;
-//user.first_name = 'Bill';
-//user.last_name = 'Gates';
-//user.age = '50';
-//user.gender = 'M';
-//user.save();
-//user.delete(16);
+//user.id = 257;
+user.first_name = 'Save';
+user.last_name = 'Gates';
+user.age = '50';
+user.gender = 'M';
+user.save().then(() => { console.log(user)});
+
+//DELETE
+user.delete().then(() => { console.log(user)});
+user.id = 257;

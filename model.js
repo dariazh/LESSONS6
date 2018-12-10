@@ -1,73 +1,62 @@
 class Model {
-    
-    load(id) {
-        let query = 'SELECT * FROM ' + this.constructor.table() + ' WHERE id = ' + id;
-        global.db.query(query)
-            .then((rows) => {
-                console.log(rows)
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+
+    static get findThisTable(){
+        return this.table();
     }
 
-    loadAll() {
-        let query = 'SELECT * FROM ' + this.constructor.table();
-        global.db.query(query)
-            .then((rows) => {
-                console.log(rows)
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+    static  load(id) {
+        var setTable =  this.findThisTable;
+        let query = 'SELECT * FROM ' + setTable + ' WHERE id = ' + id;
+        return global.db.query(query);
+    }
+
+    static  loadAll() {
+        var setTable =  this.findThisTable;
+        let query = 'SELECT * FROM ' + setTable;
+        return global.db.query(query);
     }
 
     save() {
-        const data = this.fields.filter(field => (field != this.pk)).map(field => field = `${this[field]}`);
-        const tableFields = Object.values(this.fields).slice(1);
-        var dataStr = [];
-        data.forEach(items => dataStr.push('\'' + items + '\''));
-        var setFields = {};
-        tableFields.forEach(function (i, val) {
-            setFields[i] = data[val];
-        });
         var setId = typeof this.id;
+        //set parameters for UPDATE
+        var allfieldValue = [];
 
-        if (setId != 'undefined') {
-            var id = '\'' + this.id + '\'';
-            var query = 'UPDATE ' + this.constructor.table() + ' SET ? WHERE id=' + id;
+        for (var i=0; i < this.fields.length; i++){
+            allfieldValue.push(this[this.fields[i]]);
+        };
 
-            global.db.query(query, [setFields, data])
-                .then((rows) => {
-                    console.log(rows)
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
+        var allFieldsKey = Object.values(this.fields);
+        var allFieldDependence = {};
+        allFieldsKey.forEach(function (i, val) {
+            allFieldDependence[i] = allfieldValue[val]
+        });
+        //set parameters for INSERT
+        var sliceAllFieldValue = allfieldValue.slice(1);
+        var sliceAllFieldsKey = Object.values(this.fields).slice(1);
+        var sliceAllFieldDependence = {};
+        sliceAllFieldsKey.forEach(function (i, val) {
+            sliceAllFieldDependence[i] = sliceAllFieldValue[val]
+        });
 
-        } else {
-            var id = '\'' + this.id + '\'';
-            var query = 'INSERT INTO ' + this.constructor.table() + ' (' + tableFields + ') VALUES (' + dataStr + ')';
+        //query condition
+        if (setId != 'undefined'){
+            console.log("UPDATE");
+            var idValue = '\'' + this.id + '\'';
+            var query = 'UPDATE ' + this.constructor.table() + ' SET ? WHERE id=' + idValue;
 
-            global.db.query(query)
-                .then((rows) => {
-                    console.log(rows)
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
+            return global.db.query(query, [allFieldDependence, allFieldsKey]);
+        }else{
+            console.log("INSERT");
+            var query = 'INSERT INTO ' + this.constructor.table() + ' SET ? where id = NULL';
+
+            return global.db.query(query, [sliceAllFieldDependence, sliceAllFieldsKey])
         }
     }
 
-    delete(id) {
-        let query = 'DELETE FROM ' + this.constructor.table() + ' WHERE id = ' + id;
-        global.db.query(query)
-            .then((rows) => {
-                console.log(rows)
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+    delete() {
+        var idValue = '\'' + this.id + '\'';
+        let query = 'DELETE FROM ' + this.constructor.table() + ' WHERE id = ' + idValue;
+        return global.db.query(query);
     }
 
 }
