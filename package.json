@@ -1,0 +1,20 @@
+{
+  "name": "lesson6",
+  "version": "0.0.1",
+  "main": "./index.js",
+  "scripts": {
+    "start": "SET NODE_ENV=development & nodemon index.js",
+    "dev": "nodemon index.js",
+    "super": "nodemon index.js localhost 8080"
+  },
+  "dependencies": {
+    "dotenv": "^6.1.0",
+    "mysql": "^2.15.0",
+    "node-mysql": "^0.4.2",
+    "util": "^0.11.1"
+  },
+  "devDependencies": {},
+  "author": "DariaZh",
+  "license": "ISC",
+  "description": ""
+}
